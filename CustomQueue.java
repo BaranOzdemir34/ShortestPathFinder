@@ -38,9 +38,7 @@ public class CustomQueue<E> {
         rear = (rear + 1) % capacity; // Move the rear to the next position
         queue[rear] = element; // Add the new element to the rear of the queue
         size++; // Increase the size of the queue
-        if (size > 100000) { // Limit the queue to avoid OutOfMemoryError
-            dequeue();
-        }
+        
     }
     
     /*

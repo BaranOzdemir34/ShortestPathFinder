@@ -27,25 +27,23 @@ public class BFS {
                 Path currentPath = open.dequeue();   //Delete the front path from the Open Queue and set it as current.
                 City currentCity = currentPath.getLast();  //Get the lastCity of the currentPath and make currentCity equal to it.
                 //We now have the last city in the path and we can find the neighbors doing the followings:
-                if (currentCity.equals(end)) {   //If the currentCity is the, that path is already complete so we can move on to the next Path.
-                    closed.enqueue(currentPath);   //But before moving on, We must insert the path into the complete paths queue named closed.
+                if (currentCity.equals(end)) {
+                    if (currentPath.distance < shortestDist) {
+                        shortestDist = currentPath.distance;
+                        shortestPath = currentPath;
+                    }
+                   //But before moving on, We must insert the path into the complete paths queue named closed.
                 } else {   //If the paths is not complete, we have to find the neighbors:
                 	for (int i = 0; i < distances.length; i++) {   //Traverse the distances array to find the neighbors. -n operations in the worst case. With the clonning n^2 operations.-
                     	int distanceToNextCity = distances[currentCity.getIndex()][i];   //Find the distance between the currentCity and the neighbor. -2 operations. 1 for finding the distance and 1 for assigning the value-
-                    	if (distanceToNextCity != 0 && distanceToNextCity != MAX && !currentPath.visited(cities[i])) {
+                    	if (distanceToNextCity != 0 && distanceToNextCity != MAX && !currentPath.visited(cities[i]) && shortestDist > (currentPath.distance + distanceToNextCity)) {
                         	Path newPath = new Path(currentPath, cities[i], distanceToNextCity);   //Create a new path that consists of the currentPath as initialPath, newCity and the distance. -n operations since the constructor has O(n) time complexity.
                         	open.enqueue(newPath);   //Put the new Path into the open queue so that you can continue your operations.
                     	}
                 	}
                 }
             }
-        while(!closed.isEmpty()) {   //Repeat until the closed queue is empty which means that all completed paths are compared.
-        	Path completed = closed.dequeue();   //Dequeue the first path in the queue and set the temporary value as it. -2 operations. 1 for dequeue, 1 for setting the value.-
-        	if(completed.distance < shortestDist) {   //Compare it to the shortest distance to check if it is shorter.
-        		shortestDist = completed.distance;   //If so, set the new Shortest distance -2 operations. 1 for getting the distance, 1 for setting the value.
-        		shortestPath = completed;   //Also set the new Shortest Path.   -1 operations. Setting the value.-
-        	}//Time complexity is O(n).
-        }
+        
         return shortestPath;   //Return the shortest Path.
     }   //Total complexity is n^3 + n. Time complexity is O(n^3) in total. 2 loops and a cloning each worth n. All done n times. Total will be O(n^3). 
 }
