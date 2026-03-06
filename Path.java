@@ -58,7 +58,6 @@ public class Path {
         }
         //Time complexity of this loop: O(n), where n is the number of cities in the path.
 
-        str.append(" Distance: ").append(distance).append(" km");   //Append the total distance at the end of the string. -3 operations-
 
         return str.toString();   //Return the final string representation of the path. -1 operation-
     }

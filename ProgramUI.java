@@ -22,6 +22,7 @@ public class ProgramUI extends JFrame
 	private JTextField startCityField;
     private JTextField csvFileField;
     private JTextField endCityField;
+    private JTextField unitDist;
     private JTextArea resultArea;
     private JButton findPathButton;
     private static City[] bfsCities;
@@ -36,22 +37,25 @@ public class ProgramUI extends JFrame
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         //Initialize components
-        csvFileField = new JTextField(20);
+        csvFileField = new JTextField(30);
         startCityField = new JTextField(20);
         endCityField = new JTextField(20);
+        unitDist = new JTextField(10);
         resultArea = new JTextArea(10, 30);
         resultArea.setEditable(false);
         findPathButton = new JButton("Find Shortest Path");
 
         //Setup the panel for the form
         JPanel inputPanel = new JPanel();
-        inputPanel.setLayout(new GridLayout(4, 2));
-        inputPanel.add(new JLabel("CSV File:"));
+        inputPanel.setLayout(new GridLayout(5, 2));
+        inputPanel.add(new JLabel("CSV File*:"));
         inputPanel.add(csvFileField);
-        inputPanel.add(new JLabel("Starting City:"));
+        inputPanel.add(new JLabel("Starting City*:"));
         inputPanel.add(startCityField);
-        inputPanel.add(new JLabel("Destination City:"));
+        inputPanel.add(new JLabel("Destination City*:"));
         inputPanel.add(endCityField);
+        inputPanel.add(new JLabel("Unit Distance:"));
+        inputPanel.add(unitDist);
         inputPanel.add(findPathButton);
 
         //Add components to the frame
@@ -98,6 +102,7 @@ public class ProgramUI extends JFrame
     	    }
         String startCityName = startCityField.getText().trim();
         String endCityName = endCityField.getText().trim();
+        String unitD = unitDist.getText().trim();
         
         if (startCityName.isEmpty() || endCityName.isEmpty()) 
         {
@@ -119,13 +124,13 @@ public class ProgramUI extends JFrame
             long dfsStartTime = System.nanoTime();
             String[] dfsShortestPath = dfsAlgorithm.dfs(startCityName, endCityName);
             long dfsEndTime = System.nanoTime();
-            String dfsResult = "DFS Shortest Path: " + Arrays.toString(dfsShortestPath) + "\nDistance: " + dfsAlgorithm.calculatePathDistance(dfsShortestPath) + "km\nExecution Time: " + (dfsEndTime - dfsStartTime) / 1_000_000.0 + " milliseconds\n";
+            String dfsResult = "DFS Shortest Path: " + Arrays.toString(dfsShortestPath) + "\nDistance: " + dfsAlgorithm.calculatePathDistance(dfsShortestPath) + " " + unitD + "\nExecution Time: " + (dfsEndTime - dfsStartTime) / 1_000_000.0 + " milliseconds\n";
             
             // Perform BFS
             long bfsStartTime = System.nanoTime();
             Path bfsPath = bfsAlgorithm.BFSPathFinder(startBFS, endBFS);
             long bfsEndTime = System.nanoTime();
-            String bfsResult = "BFS Shortest Path: " + bfsPath + "\nExecution Time: " + (bfsEndTime - bfsStartTime) / 1_000_000.0 + " milliseconds\n";
+            String bfsResult = "BFS Shortest Path: " + bfsPath + "\nDistance: " + bfsPath.distance + " " + unitD + "\nExecution Time: " + (bfsEndTime - bfsStartTime) / 1_000_000.0 + " milliseconds\n";
             
             resultArea.setText(dfsResult + "\n" + bfsResult);
         } 
