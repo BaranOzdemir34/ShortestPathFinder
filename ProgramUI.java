@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Arrays;
 
 import javax.swing.JButton;
@@ -17,7 +19,8 @@ import javax.swing.SwingUtilities;
 
 public class ProgramUI extends JFrame 
 {
-    private JTextField startCityField;
+	private JTextField startCityField;
+    private JTextField csvFileField;
     private JTextField endCityField;
     private JTextArea resultArea;
     private JButton findPathButton;
@@ -25,7 +28,7 @@ public class ProgramUI extends JFrame
     private static String[] dfsCities;
     private static int[][] adjacencyMatrix;
 
-    public ProgramUI() 
+    public ProgramUI() throws FileNotFoundException 
     {
         setTitle("Shortest Path Finder");
         setLayout(new BorderLayout());
@@ -33,6 +36,7 @@ public class ProgramUI extends JFrame
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         //Initialize components
+        csvFileField = new JTextField(20);
         startCityField = new JTextField(20);
         endCityField = new JTextField(20);
         resultArea = new JTextArea(10, 30);
@@ -41,7 +45,9 @@ public class ProgramUI extends JFrame
 
         //Setup the panel for the form
         JPanel inputPanel = new JPanel();
-        inputPanel.setLayout(new GridLayout(3, 2));
+        inputPanel.setLayout(new GridLayout(4, 2));
+        inputPanel.add(new JLabel("CSV File:"));
+        inputPanel.add(csvFileField);
         inputPanel.add(new JLabel("Starting City:"));
         inputPanel.add(startCityField);
         inputPanel.add(new JLabel("Destination City:"));
@@ -58,62 +64,38 @@ public class ProgramUI extends JFrame
             @Override
             public void actionPerformed(ActionEvent e) 
             {
-                handlePathCalculation();
+                try {
+					handlePathCalculation();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
             }
         });
 
-        initializeData();
+        
     }
 
-    private void initializeData() 
+    private void initializeData() throws IOException 
     {
-        City istanbul = new City("İstanbul", 0);
-        City ankara = new City("Ankara", 1);
-        City izmir = new City("İzmir", 2);
-        City bursa = new City("Bursa", 3);
-        City adana = new City("Adana", 4);
-        City gaziantep = new City("Gaziantep", 5);
-        City konya = new City("Konya", 6);
-        City diyarbakir = new City("Diyarbakır", 7);
-        City antalya = new City("Antalya", 8);
-        City mersin = new City("Mersin", 9);
-        City kayseri = new City("Kayseri", 10);
-        City sanliurfa = new City("Şanlıurfa", 11);
-        City malatya = new City("Malatya", 12);
-        City samsun = new City("Samsun", 13);
-        City denizli = new City("Denizli", 14);
-        City batman = new City("Batman", 15);
-        City trabzon = new City("Trabzon", 16);
-
-        bfsCities = new City[]{istanbul, ankara, izmir, bursa, adana, gaziantep, konya, diyarbakir, antalya, mersin, kayseri, sanliurfa, malatya, samsun, denizli, batman, trabzon};
-        
-        dfsCities = new String[]{"İstanbul", "Ankara", "İzmir", "Bursa", "Adana", "Gaziantep", "Konya", "Diyarbakır", "Antalya", "Mersin", "Kayseri", "Şanlıurfa", "Malatya", "Samsun", "Denizli", "Batman", "Trabzon"};
-        
-        adjacencyMatrix = new int[][]
-        {
-            {0, 449, 99999, 153, 99999, 99999, 645, 99999, 690, 956, 776, 99999, 99999, 737, 649, 99999, 99999},
-            {449, 0, 591, 389, 484, 705, 266, 1003, 483, 501, 317, 848, 682, 402, 483, 99999, 732},
-            {99999, 591, 0, 333, 898, 1118, 560, 99999, 451, 911, 874, 99999, 99999, 1003, 238, 99999, 99999},
-            {153, 389, 333, 0, 856, 1075, 507, 99999, 546, 869, 715, 1212, 1049, 750, 480, 99999, 1091},
-            {99999, 484, 898, 856, 0, 225, 346, 525, 649, 95, 307, 369, 389, 719, 758, 618, 851},
-            {99999, 705, 1118, 1075, 225, 0, 568, 315, 785, 311, 357, 151, 251, 803, 974, 409, 838},
-            {645, 266, 560, 507, 346, 568, 0, 866, 303, 360, 306, 702, 729, 663, 386, 964, 896},
-            {99999, 1003, 99999, 99999, 525, 315, 866, 0, 99999, 610, 571, 182, 235, 803, 1276, 97, 586},
-            {690, 483, 451, 546, 649, 785, 303, 99999, 0, 631, 610, 924, 99999, 99999, 217, 99999, 99999},
-            {956, 501, 911, 869, 95, 311, 360, 610, 631, 0, 99999, 99999, 99999, 99999, 99999, 99999, 99999},
-            {776, 317, 874, 715, 307, 357, 306, 571, 610, 99999, 0, 99999, 99999, 99999, 99999, 99999, 99999},
-            {99999, 848, 99999, 1212, 369, 151, 702, 182, 924, 99999, 99999, 0, 99999, 99999, 99999, 99999, 99999},
-            {99999, 682, 99999, 1049, 389, 251, 729, 235, 99999, 99999, 99999, 99999, 0, 99999, 99999, 99999, 99999},
-            {737, 402, 1003, 750, 719, 803, 663, 803, 99999, 99999, 99999, 99999, 99999, 0, 99999, 858, 99999},
-            {649, 483, 238, 480, 758, 974, 386, 1276, 217, 99999, 99999, 99999, 99999, 99999, 0, 99999, 99999},
-            {99999, 99999, 99999, 99999, 618, 409, 964, 97, 99999, 99999, 99999, 99999, 99999, 858, 99999, 0, 99999},
-            {99999, 732, 99999, 1091, 851, 838, 896, 586, 99999, 99999, 99999, 99999, 99999, 99999, 99999, 99999, 0}
-        };
+    	String csvFileCont = csvFileField.getText().trim();
+    	CSVReader readerC = new CSVReader(csvFileCont);
+    	dfsCities = readerC.getCityNames();
+    	bfsCities = readerC.getCityArr();
+    	adjacencyMatrix = readerC.getDistances();
     }
-
-    // Handle path calculation and display results
-    private void handlePathCalculation() 
+    private void handlePathCalculation() throws IOException 
     {
+    	{
+    	    try 
+    	    {
+    	        initializeData();
+    	    } 
+    	    catch (FileNotFoundException e) 
+    	    {
+    	        resultArea.setText("CSV file cannot be found.");
+    	        return;
+    	    }
         String startCityName = startCityField.getText().trim();
         String endCityName = endCityField.getText().trim();
         
@@ -151,6 +133,7 @@ public class ProgramUI extends JFrame
         {
             resultArea.setText(e.getMessage());
         }
+    	}
     }
 
     // Find city by name for BFS
@@ -183,7 +166,13 @@ public class ProgramUI extends JFrame
     {
         SwingUtilities.invokeLater(() -> 
         {
-            ProgramUI ui = new ProgramUI();
+            ProgramUI ui = null;
+			try {
+				ui = new ProgramUI();
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
             ui.setVisible(true);
         });
     }
