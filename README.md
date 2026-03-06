@@ -14,3 +14,4 @@ THE CSV FILE:
 The csv file's first column and first row must consist of the name of the cities and the veri first value (the value first row and first column) can be null.
 The rest of the values are integer distances of the corresponding 2 cities.
 If the cities are the same distance = 0, and if there is not path between them the distance is 99999.
+There is a sample csv file called distances.csv consisting of 17 cities of Turkey and their distances, you can check it!
